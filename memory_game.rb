@@ -221,13 +221,12 @@ def show_card board, answer_key, card
   board
 end
 
-def check_for_match board, answer_key, card_1, card_2, matches
+def check_for_match board, answer_key, grid, card_1, card_2, matches
   if answer_key[card_1] == answer_key[card_2]
     matches.push(card_1).push(card_2)
     # board[card_1] = answer_key[card_1]
     # board[card_2] = answer_key[card_2]
-    board[card_1] = " "
-    board[card_2] = " "
+    board[card_1] = board[card_2] = grid[card_1 - 1] = grid[card_2 - 1] = " "
   end
 end
 
@@ -244,6 +243,7 @@ until replay? replay
   puts
   dimensions = get_dimensions
   grid = generate_grid dimensions
+  grid_update = grid.clone
   game_board = generate_game_board grid
   answer_key = generate_answer_key random_symbols(dimensions,symbol_database), grid
   matches = []
@@ -251,15 +251,15 @@ until replay? replay
   until game_over? game_board, answer_key, round, grid, dimensions
     display_round round
     display_board_dynamic game_board, grid, dimensions
-    display_grid_dynamic grid, dimensions
+    display_grid_dynamic grid_update,dimensions
     temp_board = game_board.clone
     card_1 = choose_card grid, matches
   break if card_1 == "quit"
-    display_board_dynamic show_card(temp_board, answer_key, card_1), grid, dimensions
+    display_board_dynamic show_card(temp_board, answer_key, card_1), grid_update, dimensions
     card_2 = choose_card grid, matches
   break if card_2 == "quit"
-    display_board_dynamic show_card(temp_board, answer_key, card_2), grid, dimensions
-    check_for_match game_board, answer_key, card_1, card_2, matches
+    display_board_dynamic show_card(temp_board, answer_key, card_2), grid_update, dimensions
+    check_for_match game_board, answer_key, grid_update, card_1, card_2, matches
     round += 1
     start_next_round
   end
@@ -270,5 +270,3 @@ end
 
 # with colorize, add color to flipped cards
 # add player 1-2 options, keep score
-# play with taking matches off the board
-# disallow guessing card already matched
