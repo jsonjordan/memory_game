@@ -164,7 +164,7 @@ end
 #   card_1
 # end
 
-def choose_card grid
+def choose_card grid, matches
   puts
   validation = false
   until validation
@@ -174,7 +174,7 @@ def choose_card grid
       validation = true
     else
       card = card.to_i
-      validation = card_validation card, grid
+      validation = card_validation card, grid, matches
     end
   end
   card
@@ -201,9 +201,13 @@ end
 #   pair
 # end
 
-def card_validation card, grid
-  if (grid.include? card)
+def card_validation card, grid, matches
+  if (grid.include? card) && !(matches.include? card)
     true
+  elsif (matches.include? card)
+    puts "You have already matched that card"
+    puts
+    false
   else
     puts "invalid selection, select again"
     puts
@@ -217,12 +221,13 @@ def show_card board, answer_key, card
   board
 end
 
-def check_for_match board, answer_key, card_1, card_2
+def check_for_match board, answer_key, card_1, card_2, matches
   if answer_key[card_1] == answer_key[card_2]
-      # board[card_1] = answer_key[card_1]
-      # board[card_2] = answer_key[card_2]
-      board[card_1] = " "
-      board[card_2] = " "
+    matches.push(card_1).push(card_2)
+    # board[card_1] = answer_key[card_1]
+    # board[card_2] = answer_key[card_2]
+    board[card_1] = " "
+    board[card_2] = " "
   end
 end
 
@@ -241,19 +246,20 @@ until replay? replay
   grid = generate_grid dimensions
   game_board = generate_game_board grid
   answer_key = generate_answer_key random_symbols(dimensions,symbol_database), grid
+  matches = []
   #play game one time
   until game_over? game_board, answer_key, round, grid, dimensions
     display_round round
     display_board_dynamic game_board, grid, dimensions
     display_grid_dynamic grid, dimensions
     temp_board = game_board.clone
-    card_1 = choose_card grid
+    card_1 = choose_card grid, matches
   break if card_1 == "quit"
     display_board_dynamic show_card(temp_board, answer_key, card_1), grid, dimensions
-    card_2 = choose_card grid
+    card_2 = choose_card grid, matches
   break if card_2 == "quit"
     display_board_dynamic show_card(temp_board, answer_key, card_2), grid, dimensions
-    check_for_match game_board, answer_key, card_1, card_2
+    check_for_match game_board, answer_key, card_1, card_2, matches
     round += 1
     start_next_round
   end
