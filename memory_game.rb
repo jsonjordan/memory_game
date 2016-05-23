@@ -197,18 +197,19 @@ until replay? replay
   round = 1
   puts "~~Memory Game~~"
   puts
+  # Generate the various boards
   dimensions = get_dimensions
   grid = generate_grid dimensions
   grid_update = grid.clone    #grid_update is used for matches, grid is used to set up hashes
   game_board = generate_game_board grid
   answer_key = generate_answer_key random_symbols(dimensions,symbol_database), grid
   matches = []
+  # Start the game
   until game_over? game_board, answer_key, round, grid, dimensions
+    temp_board = game_board.clone   #temp_board used for displaying chosen cards without changing game_board
     display_round round
     display_board game_board, grid, dimensions
     display_grid grid_update,dimensions
-    temp_board = game_board.clone   #temp_board used for displaying chosen cards without changing game_board
-    card_1 = choose_card grid, matches
   break if card_1 == "quit"
     display_board show_card(temp_board, answer_key, card_1), grid_update, dimensions
     card_2 = choose_card grid, matches
