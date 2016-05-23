@@ -203,7 +203,6 @@ until replay? replay
   game_board = generate_game_board grid
   answer_key = generate_answer_key random_symbols(dimensions,symbol_database), grid
   matches = []
-  #play game one time
   until game_over? game_board, answer_key, round, grid, dimensions
     display_round round
     display_board game_board, grid, dimensions
